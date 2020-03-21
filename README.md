@@ -14,6 +14,6 @@ devtools::install_github("zejiang-unsw/NPRED")
 ## Citations
 Sharma, A., Mehrotra, R., 2014. An information theoretic alternative to model a natural system using observational information alone. Water Resources Research, 50(1): 650-660.
 
-Sharma, A., Mehrotra, R., Li, J., & Jha, S. (2016). A programming tool for nonparametric system prediction using Partial Informational Correlation and Partial Weights. Environmental Modelling & Software, 83, 271-275. 
+Galelli S., Humphrey G.B., Maier H.R., Castelletti A., Dandy G.C. and Gibbs M.S. (2014) An evaluation framework for input variable selection algorithms for environmental data-driven models, Environmental Modelling and Software, 62, 33-51, DOI: 10.1016/j.envsoft.2014.08.015. 
 
-S. Galelli, G. Humphrey, H. Maier, A. Castelletti, G. Dandy and M. Gibbs (2014),  Environmental Modelling and Software, 62, 33-51.
+Sharma, A., Mehrotra, R., Li, J., & Jha, S. (2016). A programming tool for nonparametric system prediction using Partial Informational Correlation and Partial Weights. Environmental Modelling & Software, 83, 271-275. 
