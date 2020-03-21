@@ -178,45 +178,69 @@ kernel.est.mvn <- function(Z) {
   return(dens)
 }
 #-------------------------------------------------------------------------------
-pmi.calc <- function(Y, X) {
-  # Use Gaussian kernel to compute marginal densities F(Y) & F(X) and
-  # joint density F(X,Y)
-  N <- length(Y)
+pmi.calc <- function(X, Y) {
+
+  N <- length(X)
+  
   pdf.X <- kernel.est.uvn(X)
-  
   pdf.Y <- kernel.est.uvn(Y)
-  pdf.XY <- kernel.est.mvn(cbind(Y, X))
+  pdf.XY <- kernel.est.mvn(cbind(X, Y))
   
-  calc <- log(pdf.XY / (pdf.Y * pdf.X))
+  calc <- log(pdf.XY / (pdf.X * pdf.Y))
   return(sum(calc) / N)
   
 }
 #-------------------------------------------------------------------------------
-pic.calc <- function(Y, X, Z) {
+#' Calculate PIC
+#'
+#' @param X       A vector of response.
+#' @param Y       A matrix of new predictors.
+#' @param Z       A matrix of pre-existing predictors that could be NULL if no prior predictors exist.
+#'
+#' @return A list of 2 elements: the partial mutual information (pmi), and partial informational correlation (pic).
+#' @export
+#' 
+#' @references Sharma, A., Mehrotra, R., 2014. An information theoretic alternative to model a natural system using observational information alone. Water Resources Research, 50(1): 650-660.
+#' @references Galelli S., Humphrey G.B., Maier H.R., Castelletti A., Dandy G.C. and Gibbs M.S. (2014) An evaluation framework for input variable selection algorithms for environmental data-driven models, Environmental Modelling and Software, 62, 33-51, DOI: 10.1016/j.envsoft.2014.08.015.
+pic.calc <- function(X, Y, Z) {
   
   if(is.null(Z)){
     x.in <- X
     y.in <- Y
   } else {
-    x.in <- apply(X, 2, function(x) knnregl1cv(x, Z)-x)
-    y.in <- knnregl1cv(Y, Z)-Y
+    x.in <- knnregl1cv(X, Z)-X
+    y.in <- apply(Y, 2, function(i) knnregl1cv(i, Z)-i)
+
   }
   
-  pmi <- apply(x.in, 2, function(z) pmi.calc(y.in,z))
+  pmi <- apply(y.in, 2, function(i) pmi.calc(x.in,i))
   pmi[pmi<0] <- 0
   pic <- sqrt(1-exp(-2*pmi))
   
   return(as.numeric(pic))
 }
 #-------------------------------------------------------------------------------
-pw.calc <- function(Y, X, cpy, cpyPIC){
-  
+#' Calculate Partial Weight
+#'
+#' @param x       A vector of response.
+#' @param py      A matrix containing possible predictors of x.
+#' @param cpy     The column numbers of the meaningful predictors (cpy).
+#' @param cpyPIC  Partial informational correlation (cpyPIC).
+#'
+#' @return A vector of partial weights(pw) of the same length of z.
+#' @export 
+#' 
+#' @references Sharma, A., Mehrotra, R., 2014. An information theoretic alternative to model a natural system using observational information alone. Water Resources Research, 50(1): 650-660.
+
+#' @examples 
+#' 
+pw.calc <- function(x, py, cpy, cpyPIC){
   wt <- NA
-  Z = as.matrix(X[,cpy])
+  Z = as.matrix(py[,cpy])
   if(ncol(Z)==1) {
-    wt <- calc.scaleSTDratio(Y, Z)*cpyPIC
+    wt <- calc.scaleSTDratio(x, Z)*cpyPIC
   } else {
-    for(i in 1:length(cpy)) wt[i] <- calc.scaleSTDratio(Y, Z[,i], Z[,-i])*cpyPIC[i]
+    for(i in 1:length(cpy)) wt[i] <- calc.scaleSTDratio(x, Z[,i], Z[,-i])*cpyPIC[i]
   }
   return(list(pw=wt))
 }
