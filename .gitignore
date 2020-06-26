@@ -37,4 +37,4 @@ vignettes/*.pdf
 
 inst/doc
 
-tests/
+/tests/
