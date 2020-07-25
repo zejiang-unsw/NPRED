@@ -24,3 +24,6 @@ Calculate Partial Weight
 \examples{
 
 }
+\references{
+Sharma, A., Mehrotra, R., 2014. An information theoretic alternative to model a natural system using observational information alone. Water Resources Research, 50(1): 650-660.
+}

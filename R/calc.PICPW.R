@@ -2,8 +2,8 @@
 #'
 #' @param x       A vector of response.
 #' @param py      A matrix containing possible predictors of x.
+#' @param nvarmax The maximum number of variables to be selected.
 #' @param alpha   The significance level used to judge whether the sample estimate in Equation \deqn{\hat{PIC} = sqrt(1-exp(-2\hat{PI})} is significant or not. A default alpha value is 0.1.
-#' @param method  A logic value. Use Fortran (T) or R (F). Default T.
 #'
 #' @return A list of 2 elements: the column numbers of the meaningful predictors (cpy), and partial informational correlation (cpyPIC).
 #' @export
@@ -25,7 +25,7 @@
 #' py<-data3[,-1]  # possible predictors
 #' stepwise.PIC(x,py)
 
-stepwise.PIC <- function (x, py, alpha = 0.1) 
+stepwise.PIC <- function (x, py, nvarmax=100, alpha=0.1) 
 {
   x = as.matrix(x)
   n = nrow(x)
@@ -44,6 +44,8 @@ stepwise.PIC <- function (x, py, alpha = 0.1)
     ctmp = order(-pictemp)[1]
     cpytmp = icoloutz[ctmp]
     picmaxtmp = pictemp[ctmp]
+    #cat("picmaxtmp",picmaxtmp,"\n")
+    
     if (!is.null(z)) {
       df = n - ncol(z)
     } else {
@@ -51,19 +53,23 @@ stepwise.PIC <- function (x, py, alpha = 0.1)
     }
     
     t <-  qt(1-alpha, df=df)
-    picthres <- sqrt(t^2/(t^2+df)) 
+    picthres <- sqrt(t^2/(t^2+df))
+    
+    #picthres = qt((0.5 + alpha/2), df)
     #cat("picthres",picthres,"\n")
     
     if (picmaxtmp > picthres) {
       cpy = c(cpy, cpytmp)
       cpyPIC = c(cpyPIC, picmaxtmp)
-      #cat(cpyPIC,"\n")
+      #cat("cpyPIC",cpyPIC,"\n")
       z = cbind(z, py[, cpytmp])
+
       icoloutz = icoloutz[-ctmp]
       icpy = icpy + 1
-      if ((npy - icpy) == 0) isig = F
+      if ((npy - icpy)==0|icpy>=nvarmax) isig = F
     } else {
       isig = F
+      if(icpy==0) {cpy=cpytmp; cpyPIC=picmaxtmp; z=py[,cpytmp]}
     }
   }
   #cat("calc.PW------------","\n")
@@ -71,8 +77,9 @@ stepwise.PIC <- function (x, py, alpha = 0.1)
     out = pw.calc(x, py, cpy, cpyPIC)
     outwt = out$pw
     lstwt = abs(lsfit(z, x)$coef)
-    return(list(cpy = cpy, cpyPIC = cpyPIC, wt = outwt, 
-                lstwet = lstwt))
+    return(list(cpy = cpy, cpyPIC = cpyPIC, 
+                wt = outwt, lstwet = lstwt,
+                icpy=icpy))
   } else {
     message("None of the provided predictors is related to the response variable")
   }
@@ -99,9 +106,67 @@ calc.scaleSTDratio <- function (x, zin, zout)
   } else {
     return(1) 
   }
-
 }
+#-------------------------------------------------------------------------------
+#' Calculate PIC
+#'
+#' @param X       A vector of response.
+#' @param Y       A matrix of new predictors.
+#' @param Z       A matrix of pre-existing predictors that could be NULL if no prior predictors exist.
+#'
+#' @return A list of 2 elements: the partial mutual information (pmi), and partial informational correlation (pic).
+#' @export
+#' 
+#' @references Sharma, A., Mehrotra, R., 2014. An information theoretic alternative to model a natural system using observational information alone. Water Resources Research, 50(1): 650-660.
+#' @references Galelli S., Humphrey G.B., Maier H.R., Castelletti A., Dandy G.C. and Gibbs M.S. (2014) An evaluation framework for input variable selection algorithms for environmental data-driven models, Environmental Modelling and Software, 62, 33-51, DOI: 10.1016/j.envsoft.2014.08.015.
+pic.calc <- function(X, Y, Z) {
+  
+  if(is.null(Z)){
+    x.in <- X
+    y.in <- Y
+  } else {
+    x.in <- X - knnregl1cv(X, Z)
+    y.in <- apply(Y, 2, function(i) i - knnregl1cv(i, Z))
+    # x.in <- knnregl1cv(X, Z)-X
+    # y.in <- apply(Y, 2, function(i) knnregl1cv(i, Z)-i)
+  }
+  
+  pmi <- apply(y.in, 2, function(i) pmi.calc(x.in,i))
+  pmi[pmi<0] <- 0
+  pic <- sqrt(1-exp(-2*pmi))
+  
+  return(as.numeric(pic))
+}
+#-------------------------------------------------------------------------------
+#' Calculate Partial Weight
+#'
+#' @param x       A vector of response.
+#' @param py      A matrix containing possible predictors of x.
+#' @param cpy     The column numbers of the meaningful predictors (cpy).
+#' @param cpyPIC  Partial informational correlation (cpyPIC).
+#'
+#' @return A vector of partial weights(pw) of the same length of z.
+#' @export 
+#' 
+#' @references Sharma, A., Mehrotra, R., 2014. An information theoretic alternative to model a natural system using observational information alone. Water Resources Research, 50(1): 650-660.
 
+#' @examples 
+#' 
+pw.calc <- function(x, py, cpy, cpyPIC) {
+  
+  wt <- NA
+  Z = as.matrix(py[,cpy])
+  if(ncol(Z)==1) {
+    wt <- calc.scaleSTDratio(x, Z)*cpyPIC
+    if(wt==0) wt <- 1
+  } else {
+    for(i in 1:length(cpy)) wt[i] <- calc.scaleSTDratio(x, Z[,i], Z[,-i])*cpyPIC[i]
+  }
+  
+  #return(list(pw=wt))
+  return(list(pw=wt/sum(wt)))
+}
+#-------------------------------------------------------------------------------
 #' Leave one out cross validation.
 #'
 #' @param x A vector of response.
@@ -135,14 +200,28 @@ knnregl1cv <- function (x, z, k = 0, pw)
   for (j in 1:k) xhat = xhat + x[ord[j, ]] * kern[j]
   return(xhat)
 }
-
 #-------------------------------------------------------------------------------
+pmi.calc <- function(X, Y) {
+  
+  N <- length(X)
+  
+  pdf.X <- kernel.est.uvn(X)
+  pdf.Y <- kernel.est.uvn(Y)
+  pdf.XY <- kernel.est.mvn(cbind(X, Y))
+  
+  calc <- log(pdf.XY / (pdf.X * pdf.Y))
+  return(sum(calc) / N)
+  
+}
+#-------------------------------------------------------------------------------
+# Reference: 1.5 * bandwidth
+# Harrold, T. I., Sharma, A., & Sheather, S. (2001). Selection of a kernel bandwidth for measuring dependence in hydrologic time series using the mutual information criterion. Stochastic Environmental Research and Risk Assessment, 15(4), 310-324. doi:10.1007/s004770100073
 kernel.est.uvn <- function(Z) {
   
   N <- length(Z)
   d <- 1
   # compute sigma & constant
-  sigma <- 1.5*bw.nrd0(Z)
+  sigma <- 1.5 * bw.nrd0(Z) 
   constant <- sqrt(2*pi) * sigma * N
   
   # Commence main loop
@@ -177,72 +256,6 @@ kernel.est.mvn <- function(Z) {
   
   return(dens)
 }
-#-------------------------------------------------------------------------------
-pmi.calc <- function(X, Y) {
 
-  N <- length(X)
-  
-  pdf.X <- kernel.est.uvn(X)
-  pdf.Y <- kernel.est.uvn(Y)
-  pdf.XY <- kernel.est.mvn(cbind(X, Y))
-  
-  calc <- log(pdf.XY / (pdf.X * pdf.Y))
-  return(sum(calc) / N)
-  
-}
-#-------------------------------------------------------------------------------
-#' Calculate PIC
-#'
-#' @param X       A vector of response.
-#' @param Y       A matrix of new predictors.
-#' @param Z       A matrix of pre-existing predictors that could be NULL if no prior predictors exist.
-#'
-#' @return A list of 2 elements: the partial mutual information (pmi), and partial informational correlation (pic).
-#' @export
-#' 
-#' @references Sharma, A., Mehrotra, R., 2014. An information theoretic alternative to model a natural system using observational information alone. Water Resources Research, 50(1): 650-660.
-#' @references Galelli S., Humphrey G.B., Maier H.R., Castelletti A., Dandy G.C. and Gibbs M.S. (2014) An evaluation framework for input variable selection algorithms for environmental data-driven models, Environmental Modelling and Software, 62, 33-51, DOI: 10.1016/j.envsoft.2014.08.015.
-pic.calc <- function(X, Y, Z) {
-  
-  if(is.null(Z)){
-    x.in <- X
-    y.in <- Y
-  } else {
-    x.in <- knnregl1cv(X, Z)-X
-    y.in <- apply(Y, 2, function(i) knnregl1cv(i, Z)-i)
-
-  }
-  
-  pmi <- apply(y.in, 2, function(i) pmi.calc(x.in,i))
-  pmi[pmi<0] <- 0
-  pic <- sqrt(1-exp(-2*pmi))
-  
-  return(as.numeric(pic))
-}
-#-------------------------------------------------------------------------------
-#' Calculate Partial Weight
-#'
-#' @param x       A vector of response.
-#' @param py      A matrix containing possible predictors of x.
-#' @param cpy     The column numbers of the meaningful predictors (cpy).
-#' @param cpyPIC  Partial informational correlation (cpyPIC).
-#'
-#' @return A vector of partial weights(pw) of the same length of z.
-#' @export 
-#' 
-#' @references Sharma, A., Mehrotra, R., 2014. An information theoretic alternative to model a natural system using observational information alone. Water Resources Research, 50(1): 650-660.
-
-#' @examples 
-#' 
-pw.calc <- function(x, py, cpy, cpyPIC){
-  wt <- NA
-  Z = as.matrix(py[,cpy])
-  if(ncol(Z)==1) {
-    wt <- calc.scaleSTDratio(x, Z)*cpyPIC
-  } else {
-    for(i in 1:length(cpy)) wt[i] <- calc.scaleSTDratio(x, Z[,i], Z[,-i])*cpyPIC[i]
-  }
-  return(list(pw=wt))
-}
 
 

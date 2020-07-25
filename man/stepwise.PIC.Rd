@@ -4,16 +4,16 @@
 \alias{stepwise.PIC}
 \title{Calculate stepwise PIC}
 \usage{
-stepwise.PIC(x, py, alpha = 0.1)
+stepwise.PIC(x, py, nvarmax = 100, alpha = 0.1)
 }
 \arguments{
 \item{x}{A vector of response.}
 
 \item{py}{A matrix containing possible predictors of x.}
 
-\item{alpha}{The significance level used to judge whether the sample estimate in Equation \deqn{\hat{PIC} = sqrt(1-exp(-2\hat{PI})} is significant or not. A default alpha value is 0.1.}
+\item{nvarmax}{The maximum number of variables to be selected.}
 
-\item{method}{A logic value. Use Fortran (T) or R (F). Default T.}
+\item{alpha}{The significance level used to judge whether the sample estimate in Equation \deqn{\hat{PIC} = sqrt(1-exp(-2\hat{PI})} is significant or not. A default alpha value is 0.1.}
 }
 \value{
 A list of 2 elements: the column numbers of the meaningful predictors (cpy), and partial informational correlation (cpyPIC).
