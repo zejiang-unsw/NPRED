@@ -4,13 +4,11 @@ Version: 1.0.3
 Author: Ashish Sharma, Raj Mehrotra, Sanjeev Jha, Jingwan Li and Ze Jiang
 Maintainer: Ze Jiang <ze.jiang@unsw.edu.au>
 Description: The package NPRED (partial informational correlation) is used to identify the meaningful predictors to the response from a large set of potential predictors.
-Depends:
-    R (>= 3.4.0)
-Suggests: 
-    testthat,
-    knitr,
-    rmarkdown
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.1.0
-VignetteBuilder: knitr
+LazyData: true
+Depends:
+    R (>= 3.4.0)
+Imports: 
+    stats
+RoxygenNote: 7.1.1

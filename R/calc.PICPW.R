@@ -7,6 +7,7 @@
 #'
 #' @return A list of 2 elements: the column numbers of the meaningful predictors (cpy), and partial informational correlation (cpyPIC).
 #' @export
+#' @import stats
 #'
 #' @references Sharma, A., Mehrotra, R., 2014. An information theoretic alternative to model a natural system using observational information alone. Water Resources Research, 50(1): 650-660.
 #' @examples
@@ -149,9 +150,6 @@ pic.calc <- function(X, Y, Z) {
 #' @export 
 #' 
 #' @references Sharma, A., Mehrotra, R., 2014. An information theoretic alternative to model a natural system using observational information alone. Water Resources Research, 50(1): 650-660.
-
-#' @examples 
-#' 
 pw.calc <- function(x, py, cpy, cpyPIC) {
   
   wt <- NA
