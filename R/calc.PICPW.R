@@ -70,7 +70,7 @@ stepwise.PIC <- function (x, py, nvarmax=100, alpha=0.1)
       if ((npy - icpy)==0|icpy>=nvarmax) isig = F
     } else {
       isig = F
-      if(icpy==0) {cpy=cpytmp; cpyPIC=picmaxtmp; z=py[,cpytmp]}
+      if(icpy==0&picmaxtmp>0) {cpy=cpytmp; cpyPIC=picmaxtmp; z=py[,cpytmp]}
     }
   }
   #cat("calc.PW------------","\n")
