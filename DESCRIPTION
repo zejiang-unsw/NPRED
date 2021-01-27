@@ -1,6 +1,6 @@
 Package: NPRED
 Title: Predictor identifier: Nonparameteric PREDiction
-Version: 1.0.3
+Version: 1.0.4
 Author: Ashish Sharma, Raj Mehrotra, Sanjeev Jha, Jingwan Li and Ze Jiang
 Maintainer: Ze Jiang <ze.jiang@unsw.edu.au>
 Description: The package NPRED (partial informational correlation) is used to identify the meaningful predictors to the response from a large set of potential predictors.

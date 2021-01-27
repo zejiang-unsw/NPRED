@@ -99,9 +99,14 @@ stepwise.PIC <- function (x, py, nvarmax=100, alpha=0.1)
 calc.scaleSTDratio <- function (x, zin, zout) 
 {
   if(!missing(zout)){
+    # n = nrow(as.matrix(x))
+    # k = floor(0.5 + 3 * (sqrt(n)))
+    
     xhat = knnregl1cv(x, zout)
+    #xhat = FNN::knn.reg(train=zout, y=x, k=k)$pred
     stdratxzout = sqrt(var(x - xhat)/var(x))
     zinhat = knnregl1cv(zin, zout)
+    #zinhat = FNN::knn.reg(train=zout, y=zin, k=k)$pred
     stdratzinzout = sqrt(var(zin - zinhat)/var(zin))
     return(0.5 * (stdratxzout + stdratzinzout))
   } else {
@@ -128,8 +133,14 @@ pic.calc <- function(X, Y, Z) {
   } else {
     x.in <- X - knnregl1cv(X, Z)
     y.in <- apply(Y, 2, function(i) i - knnregl1cv(i, Z))
+  
     # x.in <- knnregl1cv(X, Z)-X
     # y.in <- apply(Y, 2, function(i) knnregl1cv(i, Z)-i)
+    
+    # n = nrow(as.matrix(X))
+    # k = floor(0.5 + 3 * (sqrt(n)))
+    # x.in <- X - FNN::knn.reg(train=Z, y=X, k=k)$pred
+    # y.in <- apply(Y, 2, function(i) i - FNN::knn.reg(train=Z, y=i, k=k)$pred)
   }
   
   pmi <- apply(y.in, 2, function(i) pmi.calc(x.in,i))
@@ -223,12 +234,15 @@ kernel.est.uvn <- function(Z) {
   constant <- sqrt(2*pi) * sigma * N
   
   # Commence main loop
-  dens <- vector()
-  for(h in 1:N) {
-    dis.Z <- (Z - Z[h])^2
-    exp.dis <- exp(-dis.Z / (2*sigma^2))
-    dens[h] <- sum(exp.dis) / constant
-  }
+  # dens <- vector()
+  # for(h in 1:N) {
+  #   dis.Z <- (Z - Z[h])^2
+  #   exp.dis <- exp(-dis.Z / (2*sigma^2))
+  #   dens[h] <- sum(exp.dis) / constant
+  # }
+
+  dens <- sapply(1:N, function(i) sum(exp(-(Z - Z[i])^2/(2*sigma^2)))/constant)  
+  
   return(dens)
 }
 #-------------------------------------------------------------------------------
@@ -245,12 +259,14 @@ kernel.est.mvn <- function(Z) {
   constant <- (sqrt(2*pi)*sigma)^d * sqrt(det.Cov) * N
   
   # Commence main loop
-  dens <- vector()
-  for(h in 1:N) {
-    dist.val <- mahalanobis(Z, center = Z[h,], cov = Cov)
-    exp.dis <- exp(-dist.val / (2*sigma^2))
-    dens[h] <- sum(exp.dis) / constant
-  }
+  # dens <- vector()
+  # for(h in 1:N) {
+  #   dist.val <- mahalanobis(Z, center = Z[h,], cov = Cov)
+  #   exp.dis <- exp(-dist.val / (2*sigma^2))
+  #   dens[h] <- sum(exp.dis) / constant
+  # }
+  
+  dens <- sapply(1:N, function(i) sum(exp(-mahalanobis(Z, center = Z[i,], cov = Cov)/(2*sigma^2)))/constant)
   
   return(dens)
 }
