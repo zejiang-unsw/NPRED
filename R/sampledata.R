@@ -24,3 +24,12 @@ NULL
 #'@name data3
 #'@usage data(data3)
 NULL
+
+#'@title Sample data: Data over Sydney region
+#'@description A dataset containing Rainfall (15 stations), NCEP and CSIRO (7 atmospheric variables).
+#'
+#'@docType data
+#'@keywords datasets
+#'@name Sydney
+#'@usage data(Sydney)
+NULL

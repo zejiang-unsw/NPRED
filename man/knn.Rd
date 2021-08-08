@@ -48,26 +48,29 @@ A matrix of responses having same rows as zout if reg=T, or having nensemble col
 Modified k-nearest neighbour conditional bootstrap or regression function estimation with extrapolation
 }
 \examples{
-data(data1) #AR9 model   x(i)=0.3*x(i-1)-0.6*x(i-4)-0.5*x(i-9)+eps
-x = data1[,1]     #response
-py = data1[,-1]   #possible predictors
-ans.ar9 = stepwise.PIC(x,py) #identify the meaningful predictors and estimate partial weights
-z = py[,ans.ar9$cpy]    #predictor matrix
-pw = ans.ar9$wt         #partial weights
-zout = apply(z,2,mean)  #vector denoting where we want outputs, can be a matrix representing grid.
+data(data1) # AR9 model   x(i)=0.3*x(i-1)-0.6*x(i-4)-0.5*x(i-9)+eps
+x <- data1[, 1] # response
+py <- data1[, -1] # possible predictors
+ans.ar9 <- stepwise.PIC(x, py) # identify the meaningful predictors and estimate partial weights
+z <- py[, ans.ar9$cpy] # predictor matrix
+pw <- ans.ar9$wt # partial weights
 
-knn(x,z,zout,reg=TRUE,pw=pw) #knn regression estimate using partial weights.
+# vector denoting where we want outputs, can be a matrix representing grid.
+zout <- apply(z, 2, mean)
 
-knn(x,z,zout,reg=FALSE,pw=pw) #alternatively, knn conditional bootstrap (100 realisations).
-#Mean of the conditional bootstrap estimate should be 
-#approximately the same as the regression estimate.
+knn(x, z, zout, reg = TRUE, pw = pw) # knn regression estimate using partial weights.
 
-zout <- ts(data.gen.ar9(500,ndim=length(ans.ar9$cpy))$dp) #new input
-xhat1=xhat2=x
-xhat1 <- NPRED::knn(x,z,zout,k=5,reg=TRUE,extrap=FALSE) # without extrapolation
-xhat2 <- NPRED::knn(x,z,zout,k=5,reg=TRUE,extrap=TRUE) # with extrapolation
+knn(x, z, zout, reg = FALSE, pw = pw) # alternatively, knn conditional bootstrap (100 realisations).
+# Mean of the conditional bootstrap estimate should be
+# approximately the same as the regression estimate.
 
-ts.plot(ts(x),ts(xhat1),ts(xhat2),col=c("black","red","blue"),ylim=c(-5,5), lwd=c(2,2,1))
+zout <- ts(data.gen.ar9(500, ndim = length(ans.ar9$cpy))$dp) # new input
+xhat1 <- xhat2 <- x
+xhat1 <- NPRED::knn(x, z, zout, k = 5, reg = TRUE, extrap = FALSE) # without extrapolation
+xhat2 <- NPRED::knn(x, z, zout, k = 5, reg = TRUE, extrap = TRUE) # with extrapolation
+
+ts.plot(ts(x), ts(xhat1), ts(xhat2), col = c("black", "red", "blue"), ylim = c(-5, 5), 
+lwd = c(2, 2, 1))
 }
 \references{
 Sharma, A., Tarboton, D.G. and Lall, U., 1997. Streamflow simulation: A nonparametric approach. Water resources research, 33(2), pp.291-308.

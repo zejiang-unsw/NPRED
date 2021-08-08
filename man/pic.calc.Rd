@@ -4,7 +4,7 @@
 \alias{pic.calc}
 \title{Calculate PIC}
 \usage{
-pic.calc(X, Y, Z)
+pic.calc(X, Y, Z = NULL)
 }
 \arguments{
 \item{X}{A vector of response.}

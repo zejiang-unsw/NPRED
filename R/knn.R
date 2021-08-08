@@ -22,7 +22,9 @@
 #' ans.ar9 <- stepwise.PIC(x, py) # identify the meaningful predictors and estimate partial weights
 #' z <- py[, ans.ar9$cpy] # predictor matrix
 #' pw <- ans.ar9$wt # partial weights
-#' zout <- apply(z, 2, mean) # vector denoting where we want outputs, can be a matrix representing grid.
+#' 
+#' # vector denoting where we want outputs, can be a matrix representing grid.
+#' zout <- apply(z, 2, mean)
 #'
 #' knn(x, z, zout, reg = TRUE, pw = pw) # knn regression estimate using partial weights.
 #'
@@ -35,7 +37,8 @@
 #' xhat1 <- NPRED::knn(x, z, zout, k = 5, reg = TRUE, extrap = FALSE) # without extrapolation
 #' xhat2 <- NPRED::knn(x, z, zout, k = 5, reg = TRUE, extrap = TRUE) # with extrapolation
 #'
-#' ts.plot(ts(x), ts(xhat1), ts(xhat2), col = c("black", "red", "blue"), ylim = c(-5, 5), lwd = c(2, 2, 1))
+#' ts.plot(ts(x), ts(xhat1), ts(xhat2), col = c("black", "red", "blue"), ylim = c(-5, 5), 
+#' lwd = c(2, 2, 1))
 knn <- function(x, z, zout, k = 0, pw, reg = T, nensemble = 100, tailcorrection = T,
                 tailprob = 0.25, tailfac = 0.2, extrap = T) {
   x <- as.matrix(x)

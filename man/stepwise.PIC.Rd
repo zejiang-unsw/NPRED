@@ -23,19 +23,19 @@ Calculate stepwise PIC
 }
 \examples{
 data(data1) # AR9 model   x(i)=0.3*x(i-1)-0.6*x(i-4)-0.5*x(i-9)+eps
-x<-data1[,1]   # response
-py<-data1[,-1]  # possible predictors
-stepwise.PIC(x,py)
+x <- data1[, 1] # response
+py <- data1[, -1] # possible predictors
+stepwise.PIC(x, py)
 
 data(data2) # AR4 model:  x(i)=0.6*x(i-1)-0.4*x(i-4)+eps
-x<-data2[,1]   # response
-py<-data2[,-1]  # possible predictors
-stepwise.PIC(x,py)
+x <- data2[, 1] # response
+py <- data2[, -1] # possible predictors
+stepwise.PIC(x, py)
 
 data(data3) # AR1 model  x(i)=0.9*x(i-1)+0.866*eps
-x<-data3[,1]   # response
-py<-data3[,-1]  # possible predictors
-stepwise.PIC(x,py)
+x <- data3[, 1] # response
+py <- data3[, -1] # possible predictors
+stepwise.PIC(x, py)
 }
 \references{
 Sharma, A., Mehrotra, R., 2014. An information theoretic alternative to model a natural system using observational information alone. Water Resources Research, 50(1): 650-660.
