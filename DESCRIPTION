@@ -1,16 +1,10 @@
 Package: NPRED
-Title: Predictor identifier: Nonparameteric PREDiction
+Title: Predictor Identifier: Nonparametric Prediction
 Version: 1.0.5
-Authors@R: 
-    person(given = "Ze",
-           family = "Jiang",
-           role = c("aut", "cre"),
-           email = "ze.jiang@unsw.edu.au",
-           comment = c(ORCID = "0000-0002-3472-0829"))
 Author: Ashish Sharma [aut], Raj Mehrotra [aut], Sanjeev Jha [aut], Jingwan Li [aut],
         Ze Jiang [aut, cre] (<https://orcid.org/0000-0002-3472-0829>)
 Maintainer: Ze Jiang <ze.jiang@unsw.edu.au>
-Description: The package NPRED (partial informational correlation) is used to identify the meaningful predictors to the response from a large set of potential predictors.
+Description: Partial informational correlation (PIC) is used to identify the meaningful predictors to the response from a large set of potential predictors.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -26,6 +20,7 @@ Suggests:
     knitr,
     ggplot2, 
     testthat,
+    bookdown,
     rmarkdown
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr

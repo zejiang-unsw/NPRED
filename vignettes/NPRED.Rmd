@@ -1,14 +1,15 @@
 ---
-title: "Predictor identifier: Nonparameteric PREDiction"
+title: "Predictor Identifier: Nonparametric PREDiction"
 author: 'Ashish Sharma, Raj Mehrotra, Sanjeev Jha, Jingwan Li and Ze Jiang'
 date: "`r format(Sys.time(), '%H:%M:%S %d %B, %Y')`"
 output: 
+#  rmarkdown::html_vignette: 
   bookdown::html_vignette2: 
     toc: true
-    number_sections: false
+    number_sections: true
 vignette: >
   %\VignetteEncoding{UTF-8}
-  %\VignetteIndexEntry{Predictor identifier: Nonparameteric PREDiction}
+  %\VignetteIndexEntry{Predictor Identifier: Nonparametric PREDiction}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: console
@@ -32,7 +33,7 @@ require(zoo)
 require(ggplot2)
 ```
 
-## Synthetic data generation
+# Synthetic data generation
 
 ```{r dat, fig.cap='Example of AR models', fig.height=5, fig.width=9}
 set.seed(2020)
@@ -53,7 +54,7 @@ plot.zoo(cbind(data.ar1$x, data.ar4$x, data.ar9$x),
 ```
 
 
-## Partial informational correlation (PIC)
+# Partial informational correlation (PIC)
 
 ```{r pic}
 # R version of pic
@@ -65,7 +66,7 @@ calc.PIC(data.ar9$x, data.ar9$dp)
 
 ```
 
-## Predictor identifier: stepwise.PIC
+# Predictor identifier: stepwise.PIC
 
 ```{r fig, fig.cap='Example of PIC selection implemented in NPRED', fig.height=5, fig.width=9}
 # pic <- stepwise.PIC(data.ar1$x, data.ar1$dp)
@@ -74,7 +75,7 @@ pic <- stepwise.PIC(data.ar9$x, data.ar9$dp)
 pic
 ```
 
-## Partial weights (PW)
+# Partial weights (PW)
 
 ```{r pw}
 # R version of pw
@@ -85,7 +86,7 @@ calc.PW(data.ar9$x, data.ar9$dp, pic$cpy, pic$cpyPIC)
 
 ```
 
-## Nonparameteric prediction: knn
+# Nonparameteric prediction: knn
 
 ```{r knn, fig.cap='Example of KNN implemented in NPRED', fig.height=5, fig.width=9}
 data("data3")
@@ -120,7 +121,7 @@ if (TRUE) {
 ```
 
 
-## Illustration of the usage of partial weights
+# Illustration of the usage of partial weights
 
 ```{r weights, fig.cap='Illustration of the usage of partial weights', fig.height=6, fig.width=9, out.width='100%'}
 par(op)

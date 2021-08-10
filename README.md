@@ -1,14 +1,26 @@
 # NPRED
  
-Predictor identifier: Nonparameteric PREDiction
+Predictor Identifier: Nonparametric PREDiction (NPRED)
+Partial informational correlation (PIC) is used to identify the meaningful predictors to the response from a large set of potential predictors.
 
-A new version based on NPRED (http://hydrology.unsw.edu.au/download/software/NPRED) without calling Fortran codes.
+The initial version of NPRED is at [Hydrology@UNSW](https://www.hydrology.unsw.edu.au/download/software/npred). This is a new version of NPRED without calling Fortran codes.
+
+Applications of this package can be found in: 
+Jiang, Z., Sharma, A., & Johnson, F. (2020) \doi{10.1029/2019WR026962} 
+Jiang, Z., Rashid, M. M., Johnson, F., & Sharma, A. (2020) \doi{10.1016/j.envsoft.2020.104907}.
+
 
 ## Installation
 You can install the package via devtools from [GitHub](https://github.com/) with:
 
 ``` r
 devtools::install_github("zejiang-unsw/NPRED")
+```
+
+or via CRAN with: 
+
+``` r
+install.packages("NPRED")
 ```
 
 ## Citations
