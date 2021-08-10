@@ -7,9 +7,11 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # AR1 model from paper with 9 dummy variables
 #' data.ar1 <- data.gen.ar1(500)
 #' stepwise.PIC(data.ar1$x, data.ar1$dp)
+#' }
 data.gen.ar1 <- function(nobs, ndim = 9) {
   nwarm1 <- nwarm2 <- 30
   n <- nobs + nwarm1 + nwarm2
@@ -37,9 +39,11 @@ data.gen.ar1 <- function(nobs, ndim = 9) {
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # AR4 model from paper with total 9 dimensions
 #' data.ar4 <- data.gen.ar4(500)
 #' stepwise.PIC(data.ar4$x, data.ar4$dp)
+#' }
 data.gen.ar4 <- function(nobs, ndim = 9) {
   nwarm1 <- nwarm2 <- 30
   n <- nobs + nwarm1 + nwarm2
@@ -67,9 +71,11 @@ data.gen.ar4 <- function(nobs, ndim = 9) {
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # AR9 model from paper with total 9 dimensions
 #' data.ar9 <- data.gen.ar9(500)
 #' stepwise.PIC(data.ar9$x, data.ar9$dp)
+#' }
 data.gen.ar9 <- function(nobs, ndim = 9) {
   nwarm1 <- nwarm2 <- 30
   n <- nobs + nwarm1 + nwarm2

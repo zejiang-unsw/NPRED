@@ -11,6 +11,7 @@
 #'
 #' @references Sharma, A., Mehrotra, R., 2014. An information theoretic alternative to model a natural system using observational information alone. Water Resources Research, 50(1): 650-660.
 #' @examples
+#' \donttest{
 #' data(data1) # AR9 model   x(i)=0.3*x(i-1)-0.6*x(i-4)-0.5*x(i-9)+eps
 #' x <- data1[, 1] # response
 #' py <- data1[, -1] # possible predictors
@@ -25,6 +26,7 @@
 #' x <- data3[, 1] # response
 #' py <- data3[, -1] # possible predictors
 #' stepwise.PIC(x, py)
+#' }
 stepwise.PIC <- function(x, py, nvarmax = 100, alpha = 0.1) {
   x <- as.matrix(x)
   n <- nrow(x)

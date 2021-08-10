@@ -18,7 +18,9 @@ A list of 2 elements: a vector of response (x), and a matrix of potential predic
 Generate predictor and response data.
 }
 \examples{
+\donttest{
 # AR9 model from paper with total 9 dimensions
 data.ar9 <- data.gen.ar9(500)
 stepwise.PIC(data.ar9$x, data.ar9$dp)
+}
 }
