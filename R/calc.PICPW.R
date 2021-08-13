@@ -130,7 +130,7 @@ calc.scaleSTDratio <- function(x, zin, zout) {
 #'
 #' @references Sharma, A., Mehrotra, R., 2014. An information theoretic alternative to model a natural system using observational information alone. Water Resources Research, 50(1): 650-660.
 #' @references Galelli S., Humphrey G.B., Maier H.R., Castelletti A., Dandy G.C. and Gibbs M.S. (2014) An evaluation framework for input variable selection algorithms for environmental data-driven models, Environmental Modelling and Software, 62, 33-51, DOI: 10.1016/j.envsoft.2014.08.015.
-pic.calc <- function(X, Y, Z=NULL) {
+pic.calc <- function(X, Y, Z = NULL) {
   if (is.null(Z)) {
     x.in <- X
     y.in <- Y
@@ -148,13 +148,13 @@ pic.calc <- function(X, Y, Z=NULL) {
   }
 
   pmi <- apply(y.in, 2, function(i) pmi.calc(x.in, i))
-  
+
   tmp <- pmi
   tmp[tmp < 0] <- 0
   pic <- sqrt(1 - exp(-2 * tmp))
 
-  
-  return(list(pmi=pmi, pic=pic))
+
+  return(list(pmi = pmi, pic = pic))
 }
 #-------------------------------------------------------------------------------
 #' Calculate Partial Weight
@@ -231,7 +231,7 @@ pmi.calc <- function(X, Y) {
 # Harrold, T. I., Sharma, A., & Sheather, S. (2001). Selection of a kernel bandwidth for measuring dependence in hydrologic time series using the mutual information criterion. Stochastic Environmental Research and Risk Assessment, 15(4), 310-324. doi:10.1007/s004770100073
 kernel.est.uvn <- function(Z) {
   N <- length(Z)
-  #d <- 1
+  # d <- 1
   # compute sigma & constant
   sigma <- 1.5 * bw.nrd0(Z)
   constant <- sqrt(2 * pi) * sigma * N
@@ -244,7 +244,8 @@ kernel.est.uvn <- function(Z) {
   #   dens[h] <- sum(exp.dis) / constant
   # }
 
-  dens <- sapply(1:N, function(i) sum(exp(-(Z - Z[i])^2 / (2 * sigma^2))) / constant)
+  # dens <- sapply(1:N, function(i) sum(exp(-(Z - Z[i])^2 / (2 * sigma^2))) / constant)
+  dens <- vapply(1:N, function(i) sum(exp(-(Z - Z[i])^2 / (2 * sigma^2))) / constant, numeric(1))
 
   return(dens)
 }
@@ -269,7 +270,8 @@ kernel.est.mvn <- function(Z) {
   #   dens[h] <- sum(exp.dis) / constant
   # }
 
-  dens <- sapply(1:N, function(i) sum(exp(-mahalanobis(Z, center = Z[i, ], cov = Cov) / (2 * sigma^2))) / constant)
+  # dens <- sapply(1:N, function(i) sum(exp(-mahalanobis(Z, center = Z[i, ], cov = Cov) / (2 * sigma^2))) / constant)
+  dens <- vapply(1:N, function(i) sum(exp(-mahalanobis(Z, center = Z[i, ], cov = Cov) / (2 * sigma^2))) / constant, numeric(1))
 
   return(dens)
 }

@@ -25,7 +25,7 @@ calc.PIC <- function(x, y, z, nnmax=10000,nvarmax=100) {
   }
 
   pic <- pmi <- NULL
-  for(j in 1:ncol(y)){
+  for(j in seq_len(ncol(y))){
     y1 <- y[,j]
     output <- .Fortran("pmi", as.double(x), as.double(y1), as.double(z),
       as.integer(nd), as.integer(n),

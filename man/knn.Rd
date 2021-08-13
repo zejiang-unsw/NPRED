@@ -10,12 +10,12 @@ knn(
   zout,
   k = 0,
   pw,
-  reg = T,
+  reg = TRUE,
   nensemble = 100,
-  tailcorrection = T,
+  tailcorrection = TRUE,
   tailprob = 0.25,
   tailfac = 0.2,
-  extrap = T
+  extrap = TRUE
 )
 }
 \arguments{
@@ -70,8 +70,10 @@ xhat1 <- xhat2 <- x
 xhat1 <- NPRED::knn(x, z, zout, k = 5, reg = TRUE, extrap = FALSE) # without extrapolation
 xhat2 <- NPRED::knn(x, z, zout, k = 5, reg = TRUE, extrap = TRUE) # with extrapolation
 
-ts.plot(ts(x), ts(xhat1), ts(xhat2), col = c("black", "red", "blue"), ylim = c(-5, 5), 
-lwd = c(2, 2, 1))
+ts.plot(ts(x), ts(xhat1), ts(xhat2),
+  col = c("black", "red", "blue"), ylim = c(-5, 5),
+  lwd = c(2, 2, 1)
+)
 }
 }
 \references{
