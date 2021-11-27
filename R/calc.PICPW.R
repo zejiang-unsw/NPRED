@@ -85,7 +85,7 @@ stepwise.PIC <- function(x, py, nvarmax = 100, alpha = 0.1) {
     return(list(
       cpy = cpy, cpyPIC = cpyPIC,
       wt = outwt, lstwet = lstwt,
-      icpy = icpy
+      icpy = icpy #when icpy = 0, the identified predictor is not significant.
     ))
   } else {
     message("None of the provided predictors is related to the response variable")
@@ -153,8 +153,8 @@ pic.calc <- function(X, Y, Z = NULL) {
   tmp[tmp < 0] <- 0
   pic <- sqrt(1 - exp(-2 * tmp))
 
-
-  return(list(pmi = pmi, pic = pic))
+  return(list(pmi = as.numeric(pmi), pic = as.numeric(pic)))
+  #return(list(pmi = pmi, pic = pic))
 }
 #-------------------------------------------------------------------------------
 #' Calculate Partial Weight
