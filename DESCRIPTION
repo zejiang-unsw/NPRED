@@ -1,6 +1,6 @@
 Package: NPRED
 Title: Predictor Identifier: Nonparametric Prediction
-Version: 1.0.6
+Version: 1.0.7
 Authors@R: 
     c(person(given = "Ashish",
            family = "Sharma",
@@ -43,5 +43,5 @@ Suggests:
     testthat,
     bookdown,
     rmarkdown
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr

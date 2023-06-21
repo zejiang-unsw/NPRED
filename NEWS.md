@@ -1,3 +1,7 @@
+# NPRED (development version)
+
+* Replace DFLOAT with DBLE in pmi.f
+
 # NPRED 1.0.6
 
 * Update DESCRIPTION
