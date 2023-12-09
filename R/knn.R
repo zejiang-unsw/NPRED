@@ -81,11 +81,11 @@ knn <- function(x, z, zout, k = 0, pw, reg = TRUE, nensemble = 100, tailcorrecti
     randnum1 <- sweep(randnum, 3, kerncdf)
     randnum1[randnum1 < 0] <- 1
   }
-  sd <- sqrt(diag(var(z)))
+  Szz <- sqrt(diag(var(z)))
   for (j in 1:nz) {
     # standardize
-    z[, j] <- z[, j] / (sd[j] / pw[j])
-    zout[, j] <- zout[, j] / (sd[j] / pw[j])
+    z[, j] <- z[, j] / (Szz[j] / pw[j])
+    zout[, j] <- zout[, j] / (Szz[j] / pw[j])
   }
   for (i in 1:nzout) {
     z_out <- matrix(rep(zout[i, ], nrow(z)), nrow = nrow(z), byrow = "T")
@@ -112,7 +112,8 @@ knn <- function(x, z, zout, k = 0, pw, reg = TRUE, nensemble = 100, tailcorrecti
       if (!extrap) {
         xhat[i] <- sum(x[ord] * kern)
       } else {
-        xhat[i] <- sum((x[ord] + dtmp[ord, ] %*% t(Scond)) * kern)
+		    # Equation (21c) in Sharma (1997) and Equation 5 bi in Sharma (2002)
+        xhat[i] <- sum((x[ord] + dtmp[ord, ] %*% t(Scond)) * kern) 
       }
     }
     if (!reg) {
